@@ -1,5 +1,5 @@
-import React from 'react';
-import {SafeAreaView, Text} from 'react-native';
+import React, {useEffect} from 'react';
+import {Alert, SafeAreaView, Text} from 'react-native';
 import useStepCount from './hooks/useStepCount';
 
 function App(): React.JSX.Element {

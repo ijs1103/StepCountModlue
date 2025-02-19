@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import StepCountModule from '../modules/StepCountModule';
+import {DeviceEventEmitter} from 'react-native';
 
 const useStepCount = () => {
   const [errors, setErrors] = useState('');
@@ -9,7 +10,17 @@ const useStepCount = () => {
     StepCountModule.startStepUpdates()
       .then(data => setStepCount(data.steps))
       .catch(error => setErrors(error));
-    return () => StepCountModule.stopStepUpdates();
+    const subscription = DeviceEventEmitter.addListener(
+      'StepCountUpdated',
+      stepCount => {
+        setStepCount(stepCount);
+      },
+    );
+
+    return () => {
+      subscription.remove();
+      StepCountModule.stopStepUpdates();
+    };
   }, []);
 
   const refetch = useCallback(() => {
